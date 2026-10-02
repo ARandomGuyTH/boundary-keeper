@@ -1,2 +1,2 @@
 # boundary-keeper
-UK finnovator hackathon
+UK Finnovator Hackathon 2026
