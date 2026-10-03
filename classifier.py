@@ -7,12 +7,12 @@ import string
 from tensorflow.keras import layers
 from tensorflow.keras import losses
 
-@tf.keras.utils.register_keras_serializable()   
-def custom_standardization(input_data): #standardise data
-    lowercase = tf.strings.lower(input_data)
-    stripped_html = tf.strings.regex_replace(lowercase, '<br />', ' ')
+@tf.keras.utils.register_keras_serializable() 
+def custom_standardization(input_data): # standardise data
+    lowercase = tf.strings.lower(input_data) # lowercase everything
+    stripped_html = tf.strings.regex_replace(lowercase, '<br />', ' ') # replace html breaks w/ spaces
     return tf.strings.regex_replace(stripped_html,
-                                    '[%s]' % re.escape(string.punctuation),
+                                    '[%s]' % re.escape(string.punctuation), # remove all punctuation with regex
                                     '')
 
 
@@ -28,7 +28,7 @@ class Classifier:
 
         # Hold out 20% of the training data for validation
         val = training.sample(frac=0.2, random_state=self.seed)
-        train = training.drop(val.index)
+        newTraining = training.drop(val.index)
 
 
         self.vectorize_layer = layers.TextVectorization(
@@ -38,10 +38,10 @@ class Classifier:
             output_sequence_length=self.sequence_length)
 
         # Build the vocab from the training text
-        self.vectorize_layer.adapt(training['Output'].astype(str).values)
+        self.vectorize_layer.adapt(newTraining['Output'].astype(str).values)
         
            
-        self.train_ds = self.process_data(training)
+        self.train_ds = self.process_data(newTraining) 
         self.test_ds = self.process_data(testing)
         self.val_ds = self.process_data(val)
     
