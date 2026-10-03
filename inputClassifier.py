@@ -53,7 +53,7 @@ class InputClassifier:
         layers.Dropout(0.2),
         layers.GlobalAveragePooling1D(),
         layers.Dropout(0.2),
-        layers.Dense(6, activation='softmax')])
+        layers.Dense(8, activation='softmax')])
 
         self.model.compile(loss=losses.SparseCategoricalCrossentropy(), #configure loss function and optimiser
                     # optimizer='adam', # default learning rate, 0.001
