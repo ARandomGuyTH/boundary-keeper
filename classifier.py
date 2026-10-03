@@ -3,6 +3,8 @@ import os
 import pandas as pd
 import re
 import string
+import json
+import numpy as np
 
 from tensorflow.keras import layers
 from tensorflow.keras import losses
@@ -25,12 +27,13 @@ class Classifier:
         self.embedding_dim = 16
         self.batch_size = 32
 
-        training, testing = self.load_data()
+        data = self.load_data()
 
-        # Hold out 20% of the training data for validation
-        val = training.sample(frac=0.2, random_state=self.seed)
-        newTraining = training.drop(val.index)
+        training = data.sample(frac=0.70, random_state=42)
+        resting  = data.drop(training.index)
 
+        val   = resting.sample(frac=0.50, random_state=42)   # 50% of the remaining 30% = 15%
+        testing  = resting.drop(val.index)
 
         self.vectorize_layer = layers.TextVectorization(
             standardize=custom_standardization,
@@ -39,10 +42,10 @@ class Classifier:
             output_sequence_length=self.sequence_length)
 
         # Build the vocab from the training text
-        self.vectorize_layer.adapt(newTraining['Text'].astype(str).values)
+        self.vectorize_layer.adapt(training['Text'].astype(str).values)
         
            
-        self.train_ds = self.process_data(newTraining) 
+        self.train_ds = self.process_data(training) 
         self.test_ds = self.process_data(testing)
         self.val_ds = self.process_data(val)
     
@@ -57,7 +60,7 @@ class Classifier:
         self.model.compile(loss=losses.SparseCategoricalCrossentropy(), #configure loss function and optimiser
                     # optimizer='adam', # default learning rate, 0.001
                     optimizer=tf.keras.optimizers.Adam(learning_rate=0.005),
-                    metrics=['accuracy'])#
+                    metrics=['accuracy'])
     
     def export_model(self, export_path):
         export_model = tf.keras.Sequential([ #exported model vectorises input then parses it into the trained model
@@ -76,8 +79,22 @@ class Classifier:
         print("Loss: ", loss)
         print("Accuracy: ", accuracy)
 
+    def save_outputs(self, out_dir="outputs"):
+        os.makedirs(out_dir, exist_ok=True)
+
+        #save training data for charts
+        with open(f"{out_dir}/history.json", "w") as f:
+            json.dump(self.history.history, f)
+
+        # Test-set predictions, for the confusion matrix and per-class metrics
+        y_true = np.concatenate([labels.numpy() for _, labels in self.test_ds]) #pulls out labels from each line
+        y_pred = np.argmax(self.model.predict(self.test_ds), axis=1) #runs trained model over each and picks largest probability 
+        #compare y_true and y_pred to form confusion matrix 
+        np.savez(f"{out_dir}/predictions.npz", y_true=y_true, y_pred=y_pred)
+
+
     def train_model(self):
-        epochs = 150
+        epochs = 90
         self.history = self.model.fit(
             self.train_ds,
             validation_data=self.val_ds,
@@ -85,13 +102,15 @@ class Classifier:
 
     def process_data(self, df):
         """Turn a dataframe into a dataset of (vectorized_text, label) batches."""
+        df = df.sample(frac=1, random_state=self.seed).reset_index(drop=True) #randomise data
         texts = df['Text'].astype(str).values
         labels = df['Label'].astype('int').values
  
         ds = tf.data.Dataset.from_tensor_slices((texts, labels))
         ds = ds.batch(self.batch_size)
         ds = ds.map(self.vectorize_text, num_parallel_calls=tf.data.AUTOTUNE)
-        return ds.cache().prefetch(buffer_size=tf.data.AUTOTUNE)
+        ds = ds.cache().prefetch(buffer_size=tf.data.AUTOTUNE)
+        return ds.shuffle(buffer_size=1000, seed=self.seed, reshuffle_each_iteration=True)
             
     def vectorize_text(self, text, label):
         # text = tf.expand_dims(text, -1)
@@ -99,14 +118,16 @@ class Classifier:
 
     def load_data(self):
         #load the training and testing data from CSV files
-        training = pd.read_csv("training.csv", names=['Text', 'Label'], comment='#')
-        testing = pd.read_csv("testing.csv", names=['Text', 'Label'], comment='#')
+        data = pd.read_csv("inputTraining.csv", names=['Prompt', 'PromptType', 'Text', 'Label'], comment='#')
+        data = data.dropna(subset=['Text', 'Label']).reset_index(drop=True)
+        data['Text'] = data['Text'].astype(str)
         
-        return training, testing
+        return data
 
 if __name__ == "__main__":
     classifier = Classifier()
     classifier.create_model()
     classifier.train_model()
     classifier.evaluate_model()
+    classifier.save_outputs()
     classifier.export_model("classifierModel.keras")
