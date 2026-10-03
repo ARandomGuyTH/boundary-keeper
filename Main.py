@@ -45,7 +45,6 @@ def classify(text):
     else:
         return "GENERAL"
 
-    print(res)
 
 def main():
     print("Ask the AI for financial advice, and we'll classify the response.")
