@@ -2,6 +2,8 @@ import ollama
 import tensorflow as tf
 import classifier 
 
+import numpy as np
+
 MODEL_PATH = "classifierModel.keras"
 OLLAMA_MODEL = "llama3.2" # change this to anything 
 
@@ -18,21 +20,17 @@ def askOllama(question, model=OLLAMA_MODEL):
     )
     return response["message"]["content"]
 
-
 def classify(text):
-    prediction = classifier.predict(tf.constant([text]), verbose=0)
-    return float(prediction[0][0])
-
-
-def interpret(score):
-    if score >= 0.7:
-        return "GENERAL"
-    elif score <= 0.3:
+    prediction = classifier.predict(tf.constant([text]))
+  
+    if prediction[0][0] >= prediction[0][1] and prediction[0][0] >= prediction[0][2]:
         return "PERSONAL"
+    elif prediction[0][1] >= prediction[0][0] and prediction[0][1] >= prediction[0][2]:
+        return "GREY AREA"
     else:
-        return "GREY-AREA"
-        
+        return "GENERAL"
 
+    print(res)
 
 def main():
     print("Ask the AI for financial advice, and we'll classify the response.")
@@ -42,15 +40,13 @@ def main():
         question = input("Your question: ").strip()
         if not question or question.lower() == "quit":
             break
-
+        
         response = askOllama(question)
         print(f"{OLLAMA_MODEL}: {response}\n")
+        print(f"Classification: {classify(response)}")
 
-        score = classify(response)
-        label = interpret(score)
 
-        print(f"Classifier score: {score:.2f}")
-        print(f"Label: {label}\n")
+        
 
 
 if __name__ == "__main__":

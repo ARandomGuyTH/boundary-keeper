@@ -52,12 +52,12 @@ class Classifier:
         layers.Dropout(0.2),
         layers.GlobalAveragePooling1D(),
         layers.Dropout(0.2),
-        layers.Dense(1, activation='sigmoid')])
+        layers.Dense(3, activation='softmax')])
 
-        self.model.compile(loss=losses.BinaryCrossentropy(), #configure loss function and optimiser
+        self.model.compile(loss=losses.SparseCategoricalCrossentropy(), #configure loss function and optimiser
                     # optimizer='adam', # default learning rate, 0.001
                     optimizer=tf.keras.optimizers.Adam(learning_rate=0.005),
-                    metrics=[tf.metrics.BinaryAccuracy(threshold=0.5)])#
+                    metrics=['accuracy'])#
     
     def export_model(self, export_path):
         export_model = tf.keras.Sequential([ #exported model vectorises input then parses it into the trained model
@@ -77,7 +77,7 @@ class Classifier:
         print("Accuracy: ", accuracy)
 
     def train_model(self):
-        epochs = 300
+        epochs = 150
         self.history = self.model.fit(
             self.train_ds,
             validation_data=self.val_ds,
@@ -86,7 +86,7 @@ class Classifier:
     def process_data(self, df):
         """Turn a dataframe into a dataset of (vectorized_text, label) batches."""
         texts = df['Text'].astype(str).values
-        labels = df['Label'].astype('float32').values
+        labels = df['Label'].astype('int').values
  
         ds = tf.data.Dataset.from_tensor_slices((texts, labels))
         ds = ds.batch(self.batch_size)

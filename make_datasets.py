@@ -394,8 +394,8 @@ def build_dataset() -> list:
     """Combine, clean, dedupe, and return a list of (text, label) tuples."""
     combined = []
     combined += [(t, 0)   for t in PERSONAL]
-    combined += [(t, 1)   for t in GENERAL]
-    combined += [(t, 0.5) for t in GREY]
+    combined += [(t, 2)   for t in GENERAL]
+    combined += [(t, 1) for t in GREY]
 
     seen = {}
     cleaned = []
