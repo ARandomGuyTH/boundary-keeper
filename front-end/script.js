@@ -1,4 +1,4 @@
-const button = document.getElementById("button1");
+const button = document.getElementById("classification");
 const promptForm = document.getElementById("prompt-form");
 const promptInput = document.getElementById("prompt-input")
 const submitBtn = document.getElementById("submit-prompt");
