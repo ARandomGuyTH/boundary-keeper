@@ -1,14 +1,29 @@
 import ollama
 import tensorflow as tf
 import classifier 
-
+import flask
 import numpy as np
+
+app = flask.Flask(__name__)
 
 MODEL_PATH = "classifierModel.keras"
 OLLAMA_MODEL = "llama3.2" # change this to anything 
 
 classifier = tf.keras.models.load_model(MODEL_PATH)
 print("Classifier loaded.\n")
+
+#FLASK WRAPPED CODE FOR WEB BACKEND
+@app.route("/askLLM")
+def webAskLLM():
+    prompt = flask.request.args.get("prompt", "").strip()    
+    model = flask.request.args.get("model", OLLAMA_MODEL) #defaults to ollama model
+
+    return askOllama(prompt, model)
+
+@app.route("/classify")
+def webClassify():
+    text = flask.request.args.get("text", "").strip()
+    return classify(text)
 
 def askOllama(question, model=OLLAMA_MODEL):
     response = ollama.chat(
