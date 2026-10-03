@@ -3,6 +3,9 @@
 
 <html>
     <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="style.css">
         <title>Boundary Keeper</title>
     </head>
@@ -10,6 +13,9 @@
     <body>
         <div id="main-screen">
             <div id="main-chat-div">
+                <header class="panel-header">
+                    <h2>Chat</h2>
+                </header>
                 <div id="chat-container">
                     <div class="chat-box" id="chat-box">
                         <div class="received-message chat-message">Hello! How can I assist you today?</div>
@@ -18,14 +24,26 @@
                 <div id="prompt-div">
                     <form id="prompt-form">
                         <input type="text" id="prompt-input" placeholder="Enter prompt...">
-                        <input type="submit" value="Submit" id="submit-prompt">
+                        <input type="submit" value="Submit">
                     </form>
                 </div>
             </div>
 
             <div id="main-stats-div">
+<<<<<<< HEAD
                 <button type ="button" class="button1" id="button1">Classify</button>
                 <div id="classification"></div>
+=======
+                <header class="panel-header">
+                    <h2>Analysis</h2>
+                </header>
+                <div id="stats-container">
+                    <div class="stats-box" id="stats-box">
+                        <p>Analysis results will appear here.</p>
+                    </div>
+                    <button type ="button" class="button1" id="button1">Classify</button>
+                </div>
+>>>>>>> 401e56043972cf30a9ee0c3e898cf6fb619c8a1e
             </div>       
         </div>
         <script src="./script.js"></script>
