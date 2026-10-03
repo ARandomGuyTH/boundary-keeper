@@ -6,8 +6,9 @@ import string
 
 from tensorflow.keras import layers
 from tensorflow.keras import losses
+import tensorflow.keras
 
-@tf.keras.utils.register_keras_serializable() 
+@tf.keras.utils.register_keras_serializable()
 def custom_standardization(input_data): # standardise data
     lowercase = tf.strings.lower(input_data) # lowercase everything
     stripped_html = tf.strings.regex_replace(lowercase, '<br />', ' ') # replace html breaks w/ spaces
@@ -18,7 +19,7 @@ def custom_standardization(input_data): # standardise data
 
 class Classifier:
     def __init__(self):
-        self.max_features = 10000
+        self.max_features = 1500
         self.sequence_length = 250
         self.seed = 42
         self.embedding_dim = 16
@@ -38,7 +39,7 @@ class Classifier:
             output_sequence_length=self.sequence_length)
 
         # Build the vocab from the training text
-        self.vectorize_layer.adapt(newTraining['Output'].astype(str).values)
+        self.vectorize_layer.adapt(newTraining['Text'].astype(str).values)
         
            
         self.train_ds = self.process_data(newTraining) 
@@ -54,7 +55,8 @@ class Classifier:
         layers.Dense(1, activation='sigmoid')])
 
         self.model.compile(loss=losses.BinaryCrossentropy(), #configure loss function and optimiser
-                    optimizer='adam',
+                    # optimizer='adam', # default learning rate, 0.001
+                    optimizer=tf.keras.optimizers.Adam(learning_rate=0.005),
                     metrics=[tf.metrics.BinaryAccuracy(threshold=0.5)])#
     
     def export_model(self, export_path):
@@ -75,7 +77,7 @@ class Classifier:
         print("Accuracy: ", accuracy)
 
     def train_model(self):
-        epochs = 10
+        epochs = 300
         self.history = self.model.fit(
             self.train_ds,
             validation_data=self.val_ds,
@@ -83,8 +85,8 @@ class Classifier:
 
     def process_data(self, df):
         """Turn a dataframe into a dataset of (vectorized_text, label) batches."""
-        texts = df['Output'].astype(str).values
-        labels = df['inBound'].astype('float32').values
+        texts = df['Text'].astype(str).values
+        labels = df['Label'].astype('float32').values
  
         ds = tf.data.Dataset.from_tensor_slices((texts, labels))
         ds = ds.batch(self.batch_size)
@@ -97,8 +99,8 @@ class Classifier:
 
     def load_data(self):
         #load the training and testing data from CSV files
-        training = pd.read_csv("training.csv", names=['Output', 'inBound'], comment='#')
-        testing = pd.read_csv("testing.csv", names=['Output', 'inBound'], comment='#')
+        training = pd.read_csv("training.csv", names=['Text', 'Label'], comment='#')
+        testing = pd.read_csv("testing.csv", names=['Text', 'Label'], comment='#')
         
         return training, testing
 

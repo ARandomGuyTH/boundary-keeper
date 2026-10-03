@@ -7,6 +7,6 @@ def classify(text):
     return prediction
 
 if __name__ == "__main__":
-    test_text = "Many people make sure they have an emergency buffer before investing"
+    test_text = "I think you should put your funds into here."
     prediction = classify(test_text)
     print(f"Prediction for '{test_text}': {prediction}")
