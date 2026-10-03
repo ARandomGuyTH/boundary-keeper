@@ -30,7 +30,8 @@ def webAskLLM():
 @app.route("/classify")
 def webClassify():
     text = flask.request.args.get("text").strip()
-    return flask.jsonify({"result": classify(text)})
+    type1 = int(flask.request.args.get("type").strip())
+    return flask.jsonify({"result": classify(text, type1)})
 
 def askOllama(question, model=OLLAMA_MODEL):
     response = ollama.chat(
@@ -42,9 +43,9 @@ def askOllama(question, model=OLLAMA_MODEL):
     )
     return response["message"]["content"]
 
-def classify(text, type): # 0 for quesitons, 1 for responses
+def classify(text, type1): # 0 for quesitons, 1 for responses
     prediction = classifier.predict(tf.constant([text]))
-    match (type):
+    match (type1):
         case 0:
             if prediction[0][0] > 0.5:
                 return "DIRECT SOLICITATION"

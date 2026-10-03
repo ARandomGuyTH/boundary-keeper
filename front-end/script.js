@@ -24,6 +24,7 @@ async function fetchJSON(url) {
     const response = await fetch(url);
     if (!response.ok) throw new Error("Request failed: " + response.status);
     const data = await response.json();
+    console.log(data);
     if (data.error) throw new Error(data.error);
     return data;
 }
@@ -47,7 +48,7 @@ function setBadge(elementId, text, variant = "badge-neutral") {
 async function analysePrompt(text) {
     setBadge("prompt-type", "Analysing…");
     try {
-        const data = await fetchJSON(PROMPT_TYPE_URL + encodeURIComponent(text));
+        const data = await fetchJSON(BOUNDS_URL + encodeURIComponent(text) + "&type=0");
         setBadge("prompt-type", data.result);
     } catch (err) {
         console.error(err);
@@ -58,7 +59,7 @@ async function analysePrompt(text) {
 async function analyseResponse(text) {
     setBadge("bounds-verdict", "Analysing…");
     try {
-        const data = await fetchJSON(BOUNDS_URL + encodeURIComponent(text));
+        const data = await fetchJSON(BOUNDS_URL + encodeURIComponent(text) + "&type=1");
         const label = String(data.result).toLowerCase();
         setBadge("bounds-verdict", data.result, BOUNDS_VARIANTS[label]);
     } catch (err) {
