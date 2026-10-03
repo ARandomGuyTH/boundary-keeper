@@ -5,7 +5,6 @@
 }
 
 
-
 #main-screen {
     height: 100vh;
     width: 100vw;
@@ -103,8 +102,24 @@ margin-top: 20px;
 }
 
 #main-stats-div {
-    background-color: blue;
+    background-color: #969a97;
     width: 50vw;
     height: 100vh;
 }
 
+.button1 {
+    background-color: #ff4242;
+    border: none;
+    display: inline-block;
+    text-align: center;
+    font-style: italic;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    width: 80px;
+    height: 50px;
+    font-size: large;
+    cursor: pointer;
+    margin-left: 25vw;
+    margin-top: 5vw;
+}
+
+.button1 {border-radius: 5px;}
