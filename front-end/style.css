@@ -70,7 +70,6 @@ body {
 .chat-box {
     width: 50vw;
     height: 90vh;
-    background-color: #ffffff;
     background-color: var(--surface);
     overflow-y: scroll;
     display: flex;
@@ -90,11 +89,6 @@ body {
     font-size: 1.2rem;
 }
 
-.received-message {
-=======
-    padding: 16px;
-}
-
 .chat-message {
     padding: 10px 14px;
     margin-bottom: 10px;
@@ -109,18 +103,14 @@ body {
     background-color: var(--bubble-received);
     border: 1px solid var(--border);
     align-self: flex-start;
-    background-color: lightskyblue;
     border-bottom-left-radius: 2px;
-    color: black;
 }
 
 .sent-message {
     background-color: var(--bubble-sent);
     border: 1px solid var(--bubble-border);
     align-self: flex-end;
-    background-color: lightgreen;
     border-bottom-right-radius: 2px;
-    color: black;
 }
 
 .user-input {
@@ -191,6 +181,8 @@ margin-top: 20px;
     border-radius: 4px;
     font: inherit;
     cursor: pointer;
+    margin-left: 25vw;
+    margin-top: 5vw;
     text-align: center;
 }
 
