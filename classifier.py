@@ -77,7 +77,7 @@ class Classifier:
         print("Accuracy: ", accuracy)
 
     def train_model(self):
-        epochs = 150
+        epochs = 90
         self.history = self.model.fit(
             self.train_ds,
             validation_data=self.val_ds,

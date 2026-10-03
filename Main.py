@@ -33,7 +33,7 @@ def askOllama(question, model=OLLAMA_MODEL):
         model=model,
         messages=[{"role": "user", "content": question}],
         options={
-            "num_predict": 150  # limit no. of words in a response
+            "num_predict": 100  # limit no. of words in a response
         }
     )
     return response["message"]["content"]
