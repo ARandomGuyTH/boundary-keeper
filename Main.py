@@ -42,15 +42,33 @@ def askOllama(question, model=OLLAMA_MODEL):
     )
     return response["message"]["content"]
 
-def classify(text):
+def classify(text, type): # 0 for quesitons, 1 for responses
     prediction = classifier.predict(tf.constant([text]))
-  
-    if prediction[0][0] >= prediction[0][1] and prediction[0][0] >= prediction[0][2]:
-        return "PERSONAL"
-    elif prediction[0][1] >= prediction[0][0] and prediction[0][1] >= prediction[0][2]:
-        return "GREY AREA"
-    else:
-        return "GENERAL"
+    match (type):
+        case 0:
+            if prediction[0][0] > 0.5:
+                return "DIRECT SOLICITATION"
+            elif prediction[0][1] > 0.5:
+                return "EMOTIONAL PRESSURE"
+            elif prediction[0][2] > 0.5:
+                return "HYPOTHETICAL"
+            elif prediction[0][3] > 0.5:
+                return "FALSE AUTHORITY"
+            elif prediction[0][4] > 0.5:
+                return "ENDORSEMENT BAIT"
+            elif prediction[0][5] > 0.5:
+                return "JAILBREAK/RULE BYPASS"
+            elif prediction[0][6] > 0.5:
+                return "INDIRECT"
+            else:
+                return "INBOUND"
+        case 1:
+            if prediction[0][0] >= prediction[0][1] and prediction[0][0] >= prediction[0][2]:
+                return "PERSONAL"
+            elif prediction[0][1] >= prediction[0][0] and prediction[0][1] >= prediction[0][2]:
+                return "GREY AREA"
+            else:
+                return "GENERAL"
 
 
 def main():
@@ -64,7 +82,7 @@ def main():
         
         response = askOllama(question)
         print(f"{OLLAMA_MODEL}: {response}\n")
-        print(f"Classification: {classify(response)}")
+        print(f"Classification: {classify(response, 1)}")
 
 
         
