@@ -14,10 +14,93 @@
 
 
 #main-chat-div {
-    background-color: #262626;
+    background-color: white;
+    font-family: Arial, sans-serif;
     width: 50vw;
     height: 100vh;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
 }
+
+#chat-container {
+    background-color: #5e3e3e;
+    border-radius: 8px;
+    width: 100%;
+    overflow-y: auto;
+    max-height: 400px;
+    display: flex;
+}
+
+.chat-box {
+    width: 100%;
+    height: 100%;
+    background-color: #ffffff;
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.chat-message {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    max-width: 70%;
+    display: flex;
+    margin: 10px;
+    font-size: 20px;
+}
+
+.received-message {
+    background-color: #dff2e9; /* Light green */
+    align-self: flex-start;
+    border-bottom-left-radius: 0; /* Square corner on the left */
+}
+
+.sent-message {
+    background-color: #c3d9fa; /* Light blue */
+    align-self: flex-end;
+    border-bottom-right-radius: 0; /* Square corner on the right */
+}
+.user-input {
+margin-top: 20px;
+}
+
+#prompt-div {
+    position: absolute;
+    bottom: 0;
+    width: 50vw;
+    form {
+        border-radius: 5px;
+        background-color: #ffffff;
+        padding: 10px;
+    }
+    input[type=text], select {
+        width: 88%;
+        padding: 10px;
+        margin: 8px 0;
+        display: inline-flex;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+    input[type=submit] {
+        width: 10%;
+        background-color: #272727;
+        color: white;
+        padding: 10px;
+        margin: 8px 0;
+        display: inline-flex;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    button:hover {
+        background-color: #45a049; /* Darker green */
+    }
+}
+
 #main-stats-div {
     background-color: #969a97;
     width: 50vw;
