@@ -25,52 +25,57 @@
 }
 
 #chat-container {
-    background-color: #fff;
-    padding: 20px;
+    background-color: #5e3e3e;
     border-radius: 8px;
-    width: 300px;
+    width: 100%;
     overflow-y: auto;
     max-height: 400px;
+    display: flex;
 }
 
-#chat-box {
+.chat-box {
     width: 100%;
     height: 100%;
     background-color: #ffffff;
     overflow-y: scroll;
     display: flex;
     flex-direction: column;
+    position: relative;
 }
 
-#chat-message {
+.chat-message {
     padding: 10px;
     margin-bottom: 10px;
     border-radius: 5px;
     max-width: 70%;
-    .received {
-        background-color: #dff2e9; /* Light green */
-        align-self: flex-start;
-    }
+    display: flex;
+    margin: 10px;
+    font-size: 20px;
+}
 
-    .sent {
-        background-color: #c3d9fa; /* Light blue */
-        align-self: flex-end;
-    }
-    .user-input {
-    margin-top: 20px;
-    }
+.received-message {
+    background-color: #dff2e9; /* Light green */
+    align-self: flex-start;
+    border-bottom-left-radius: 0; /* Square corner on the left */
+}
 
+.sent-message {
+    background-color: #c3d9fa; /* Light blue */
+    align-self: flex-end;
+    border-bottom-right-radius: 0; /* Square corner on the right */
+}
+.user-input {
+margin-top: 20px;
 }
 
 #prompt-div {
     position: absolute;
     bottom: 0;
     width: 50vw;
-    height: 10vh;
     form {
         border-radius: 5px;
         background-color: #ffffff;
-        padding: 5px;
+        padding: 10px;
     }
     input[type=text], select {
         width: 88%;
