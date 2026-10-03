@@ -27,12 +27,13 @@ class Classifier:
         self.embedding_dim = 16
         self.batch_size = 32
 
-        training, testing = self.load_data()
+        data = self.load_data()
 
-        # Hold out 20% of the training data for validation
-        val = training.sample(frac=0.2, random_state=self.seed)
-        newTraining = training.drop(val.index)
+        training = data.sample(frac=0.70, random_state=42)
+        resting  = data.drop(training.index)
 
+        val   = resting.sample(frac=0.50, random_state=42)   # 50% of the remaining 30% = 15%
+        testing  = resting.drop(val.index)
 
         self.vectorize_layer = layers.TextVectorization(
             standardize=custom_standardization,
@@ -41,10 +42,10 @@ class Classifier:
             output_sequence_length=self.sequence_length)
 
         # Build the vocab from the training text
-        self.vectorize_layer.adapt(newTraining['Text'].astype(str).values)
+        self.vectorize_layer.adapt(training['Text'].astype(str).values)
         
            
-        self.train_ds = self.process_data(newTraining) 
+        self.train_ds = self.process_data(training) 
         self.test_ds = self.process_data(testing)
         self.val_ds = self.process_data(val)
     
@@ -59,7 +60,7 @@ class Classifier:
         self.model.compile(loss=losses.SparseCategoricalCrossentropy(), #configure loss function and optimiser
                     # optimizer='adam', # default learning rate, 0.001
                     optimizer=tf.keras.optimizers.Adam(learning_rate=0.005),
-                    metrics=['accuracy'])#
+                    metrics=['accuracy'])
     
     def export_model(self, export_path):
         export_model = tf.keras.Sequential([ #exported model vectorises input then parses it into the trained model
@@ -101,6 +102,7 @@ class Classifier:
 
     def process_data(self, df):
         """Turn a dataframe into a dataset of (vectorized_text, label) batches."""
+        df = df.sample(frac=1, random_state=self.seed).reset_index(drop=True) #randomise data
         texts = df['Text'].astype(str).values
         labels = df['Label'].astype('int').values
  
@@ -116,10 +118,11 @@ class Classifier:
 
     def load_data(self):
         #load the training and testing data from CSV files
-        training = pd.read_csv("training.csv", names=['Text', 'Label'], comment='#')
-        testing = pd.read_csv("testing.csv", names=['Text', 'Label'], comment='#')
+        data = pd.read_csv("inputTraining.csv", names=['Prompt', 'PromptType', 'Text', 'Label'], comment='#')
+        data = data.dropna(subset=['Text', 'Label']).reset_index(drop=True)
+        data['Text'] = data['Text'].astype(str)
         
-        return training, testing
+        return data
 
 if __name__ == "__main__":
     classifier = Classifier()
