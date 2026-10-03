@@ -4,13 +4,17 @@ import classifier
 import flask
 import numpy as np
 
-app = flask.Flask(__name__)
+app = flask.Flask(__name__, static_folder="front-end", static_url_path="")
 
 MODEL_PATH = "classifierModel.keras"
 OLLAMA_MODEL = "llama3.2" # change this to anything 
 
 classifier = tf.keras.models.load_model(MODEL_PATH)
 print("Classifier loaded.\n")
+
+@app.route("/") #on enter website return the web page
+def index():
+    return app.send_static_file("index.html")
 
 #FLASK WRAPPED CODE FOR WEB BACKEND
 @app.route("/askLLM")
@@ -22,8 +26,8 @@ def webAskLLM():
 
 @app.route("/classify")
 def webClassify():
-    text = flask.request.args.get("text", "").strip()
-    return classify(text)
+    text = flask.request.args.get("text").strip()
+    return flask.jsonify({"result": classify(text)})
 
 def askOllama(question, model=OLLAMA_MODEL):
     response = ollama.chat(
@@ -64,4 +68,5 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    # main()
+    app.run(port=5001)
