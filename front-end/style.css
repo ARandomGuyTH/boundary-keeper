@@ -13,11 +13,18 @@
     --text: #37352F;
     --muted: #787774;
     --brown: #64473A;
+
     --bubble-border: #D9D5CE;
     --bubble-sent: #E6DFD7;
     --bubble-received: #F1EFEB;
+
     --button: #37352F;
     --button-hover: #565656;
+
+    --badge-in: #2F6B4A; /* green */
+    --badge-border: #8A6112; /* yellow */
+    --badge-out: #A63B2E; /* red */
+
     --font-size: 18px;
 }
 
@@ -174,6 +181,29 @@ margin-top: 20px;
     gap: 12px;
     padding: 20px;
     overflow-y: auto;
+}
+
+.stat-card {
+    background-color: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--muted);
+    margin-bottom: 8px;
+}
+
+.badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: white;
 }
 
 .classification {
