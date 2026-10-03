@@ -21,6 +21,6 @@ button.addEventListener("click", function() {
     alert("Hello test");
 })
 
-submitPromptBtn.addEventListener("click", function()) {
+submitPromptBtn.addEventListener("click", function() {
     var userInput = document.getElementById("prompt-input").value
-}
+})
