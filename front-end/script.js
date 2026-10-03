@@ -15,12 +15,6 @@ button.addEventListener("click", async function() {
     console.log(outputClass.result);
 })
 
-button.addEventListener("click", function() {
-    console.log("Button was clicked!");
-    //function logic goes here 
-    alert("Hello test");
-})
-
 submitPromptBtn.addEventListener("click", function() {
     var userInput = document.getElementById("prompt-input").value
 })
