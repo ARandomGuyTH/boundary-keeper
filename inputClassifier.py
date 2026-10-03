@@ -25,12 +25,13 @@ class InputClassifier:
         self.embedding_dim = 16
         self.batch_size = 32
 
-        training, testing = self.load_data()
+        data = self.load_data()
 
-        # Hold out 20% of the training data for validation
-        val = training.sapmle(frac=0.2, random_state=self.seed)
-        newTraining = training.drop(val.index)
+        training = data.sample(frac=0.70, random_state=42)
+        resting  = data.drop(training.index)
 
+        val   = resting.sample(frac=0.50, random_state=42)   # 50% of the remaining 30% = 15%
+        testing  = resting.drop(val.index)
 
         self.vectorize_layer = layers.TextVectorization(
             standardize=custom_standardization,
@@ -39,10 +40,10 @@ class InputClassifier:
             output_sequence_length=self.sequence_length)
 
         # Build the vocab from the training text
-        self.vectorize_layer.adapt(newTraining['Text'].astype(str).values)
+        self.vectorize_layer.adapt(training['Text'].astype(str).values)
         
            
-        self.train_ds = self.process_data(newTraining) 
+        self.train_ds = self.process_data(training) 
         self.test_ds = self.process_data(testing)
         self.val_ds = self.process_data(val)
     
@@ -100,13 +101,14 @@ class InputClassifier:
 
     def load_data(self):
         #load the training and testing data from CSV files
-        training = pd.read_csv("inputTraining.csv", names=['Text', 'Label'], comment='#')
-        testing = pd.read_csv("inputTesting.csv", names=['Text', 'Label'], comment='#')
+        data = pd.read_csv("inputTraining.csv", names=['Text', 'Label', 'Output', 'OutputType'], comment='#')
+        data = data.dropna(subset=['Text', 'Label']).reset_index(drop=True)
+        data['Text'] = data['Text'].astype(str)
         
-        return training, testing
+        return data
 
 if __name__ == "__main__":
-    classifier = Classifier()
+    classifier = InputClassifier()
     classifier.create_model()
     classifier.train_model()
     classifier.evaluate_model()
