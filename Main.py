@@ -20,9 +20,8 @@ def index():
 @app.route("/askLLM")
 def webAskLLM():
     prompt = flask.request.args.get("prompt", "").strip()    
-    model = flask.request.args.get("model", OLLAMA_MODEL) #defaults to ollama model
 
-    return askOllama(prompt, model)
+    return flask.jsonify({"result": askOllama(prompt)})
 
 @app.route("/classify")
 def webClassify():
