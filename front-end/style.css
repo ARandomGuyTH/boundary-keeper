@@ -206,6 +206,11 @@ margin-top: 20px;
     color: white;
 }
 
+.badge-neutral { background-color: var(--muted); }
+.badge-in      { background-color: var(--badge-in); }
+.badge-border  { background-color: var(--badge-border); }
+.badge-out     { background-color: var(--badge-out); }
+
 .classification {
     background-color: var(--button);
     color: white;
