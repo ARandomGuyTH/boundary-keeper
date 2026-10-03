@@ -7,12 +7,16 @@ import inputClassifier
 
 app = flask.Flask(__name__, static_folder="front-end", static_url_path="")
 
+INPUT_LABELS = ["DIRECT SOLICITATION", "EMOTIONAL PRESSURE", "HYPOTHETICAL", "FALSE AUTHORITY",
+                "ENDORSEMENT BAIT", "JAILBREAK/RULE BYPASS", "INDIRECT", "NEUTRAL"]
+RESPONSE_LABELS = ["PERSONAL", "GREY AREA", "GENERAL"]
+
 MODEL_PATH = "classifierModel.keras"
 INPUT_MODEL_PATH = "inputClassifierModel.keras"
 OLLAMA_MODEL = "llama3.2" # change this to anything 
 
 classifier = tf.keras.models.load_model(MODEL_PATH)
-inputClassifier = tf.keras.models.load_model(MODEL_PATH)
+inputClassifier = tf.keras.models.load_model(INPUT_MODEL_PATH)
 
 print("Classifiers loaded.\n")
 
@@ -43,34 +47,10 @@ def askOllama(question, model=OLLAMA_MODEL):
     )
     return response["message"]["content"]
 
-def classify(text, type1): # 0 for quesitons, 1 for responses
-    prediction = classifier.predict(tf.constant([text]))
-    match (type1):
-        case 0:
-            if prediction[0][0] > 0.5:
-                return "DIRECT SOLICITATION"
-            elif prediction[0][1] > 0.5:
-                return "EMOTIONAL PRESSURE"
-            elif prediction[0][2] > 0.5:
-                return "HYPOTHETICAL"
-            elif prediction[0][3] > 0.5:
-                return "FALSE AUTHORITY"
-            elif prediction[0][4] > 0.5:
-                return "ENDORSEMENT BAIT"
-            elif prediction[0][5] > 0.5:
-                return "JAILBREAK/RULE BYPASS"
-            elif prediction[0][6] > 0.5:
-                return "INDIRECT"
-            else:
-                return "INBOUND"
-        case 1:
-            if prediction[0][0] >= prediction[0][1] and prediction[0][0] >= prediction[0][2]:
-                return "PERSONAL"
-            elif prediction[0][1] >= prediction[0][0] and prediction[0][1] >= prediction[0][2]:
-                return "GREY AREA"
-            else:
-                return "GENERAL"
-
+def classify(text, type1):
+    labels, model = (INPUT_LABELS, inputClassifier) if type1 == 0 else (RESPONSE_LABELS, classifier)
+    probs = model.predict(tf.constant([text]), verbose=0)[0]
+    return labels[int(np.argmax(probs))]
 
 def main():
     print("Ask the AI for financial advice, and we'll classify the response.")
