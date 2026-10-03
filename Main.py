@@ -3,14 +3,18 @@ import tensorflow as tf
 import classifier 
 import flask
 import numpy as np
+import inputClassifier
 
 app = flask.Flask(__name__, static_folder="front-end", static_url_path="")
 
 MODEL_PATH = "classifierModel.keras"
+INPUT_MODEL_PATH = "inputClassifierModel.keras"
 OLLAMA_MODEL = "llama3.2" # change this to anything 
 
 classifier = tf.keras.models.load_model(MODEL_PATH)
-print("Classifier loaded.\n")
+inputClassifier = tf.keras.models.load_model(MODEL_PATH)
+
+print("Classifiers loaded.\n")
 
 @app.route("/") #on enter website return the web page
 def index():

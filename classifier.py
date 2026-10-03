@@ -107,7 +107,8 @@ class Classifier:
         ds = tf.data.Dataset.from_tensor_slices((texts, labels))
         ds = ds.batch(self.batch_size)
         ds = ds.map(self.vectorize_text, num_parallel_calls=tf.data.AUTOTUNE)
-        return ds.cache().prefetch(buffer_size=tf.data.AUTOTUNE)
+        ds = ds.cache().prefetch(buffer_size=tf.data.AUTOTUNE)
+        return ds.shuffle(buffer_size=1000, seed=self.seed, reshuffle_each_iteration=True)
             
     def vectorize_text(self, text, label):
         # text = tf.expand_dims(text, -1)

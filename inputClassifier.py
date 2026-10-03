@@ -28,7 +28,7 @@ class InputClassifier:
         training, testing = self.load_data()
 
         # Hold out 20% of the training data for validation
-        val = training.sample(frac=0.2, random_state=self.seed)
+        val = training.sapmle(frac=0.2, random_state=self.seed)
         newTraining = training.drop(val.index)
 
 
@@ -91,7 +91,8 @@ class InputClassifier:
         ds = tf.data.Dataset.from_tensor_slices((texts, labels))
         ds = ds.batch(self.batch_size)
         ds = ds.map(self.vectorize_text, num_parallel_calls=tf.data.AUTOTUNE)
-        return ds.cache().prefetch(buffer_size=tf.data.AUTOTUNE)
+        ds = ds.cache().prefetch(buffer_size=tf.data.AUTOTUNE)
+        return ds.shuffle(buffer_size=1000, seed=self.seed, reshuffle_each_iteration=True)
             
     def vectorize_text(self, text, label):
         # text = tf.expand_dims(text, -1)
@@ -109,4 +110,4 @@ if __name__ == "__main__":
     classifier.create_model()
     classifier.train_model()
     classifier.evaluate_model()
-    classifier.export_model("classifierModel.keras")
+    classifier.export_model("inputClassifierModel.keras")
