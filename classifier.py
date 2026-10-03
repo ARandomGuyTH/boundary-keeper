@@ -3,6 +3,8 @@ import os
 import pandas as pd
 import re
 import string
+import json
+import numpy as np
 
 from tensorflow.keras import layers
 from tensorflow.keras import losses
@@ -76,6 +78,20 @@ class Classifier:
         print("Loss: ", loss)
         print("Accuracy: ", accuracy)
 
+    def save_outputs(self, out_dir="outputs"):
+        os.makedirs(out_dir, exist_ok=True)
+
+        #save training data for charts
+        with open(f"{out_dir}/history.json", "w") as f:
+            json.dump(self.history.history, f)
+
+        # Test-set predictions, for the confusion matrix and per-class metrics
+        y_true = np.concatenate([labels.numpy() for _, labels in self.test_ds]) #pulls out labels from each line
+        y_pred = np.argmax(self.model.predict(self.test_ds), axis=1) #runs trained model over each and picks largest probability 
+        #compare y_true and y_pred to form confusion matrix 
+        np.savez(f"{out_dir}/predictions.npz", y_true=y_true, y_pred=y_pred)
+
+
     def train_model(self):
         epochs = 150
         self.history = self.model.fit(
@@ -109,4 +125,5 @@ if __name__ == "__main__":
     classifier.create_model()
     classifier.train_model()
     classifier.evaluate_model()
+    classifier.save_outputs()
     classifier.export_model("classifierModel.keras")
