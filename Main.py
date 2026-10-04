@@ -38,7 +38,7 @@ def webClassify():
     result, confidence = classify(text, type1)
     return flask.jsonify({"result": result, "confidence" : confidence})
 
-def askOllama(question, model="gemma2:2b"):
+def askOllama(question, model=OLLAMA_MODEL):
     response = ollama.chat(
         model=model,
         messages=[{"role": "user", "content": question + " Please provide a short answer."}],
