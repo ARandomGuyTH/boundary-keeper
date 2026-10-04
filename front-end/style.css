@@ -245,3 +245,14 @@ input:focus-visible, button:focus-visible {
 .reveal-btn:hover {
     background-color: rgba(166, 59, 46, 0.08);
 }
+
+.stat-note {
+    margin-top: 10px;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    color: var(--muted);
+}
+
+.stat-note:empty {
+    display: none;
+}
