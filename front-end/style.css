@@ -161,10 +161,6 @@ margin-top: 20px;
     input[type=submit]:hover {
         background-color: var(--button-hover);
     }
-    input:focus-visible, button:focus-visible {
-        outline: 2px solid var(--muted);
-        outline-offset: 2px;
-    }
 }
 
 #main-stats-div {
@@ -220,19 +216,32 @@ margin-top: 20px;
 .badge-border  { background-color: var(--badge-border); }
 .badge-out     { background-color: var(--badge-out); }
 
-/* TAKE THIS OUT (IN HTML AS WELL) */
-.classification {
-    background-color: var(--button);
-    color: white;
-    padding: 10px 16px;
-    border-radius: 4px;
-    font: inherit;
-    cursor: pointer;
-    margin-left: 25vw;
-    margin-top: 5vw;
-    text-align: center;
+input:focus-visible, button:focus-visible {
+    outline: 2px solid var(--muted);
+    outline-offset: 2px;
 }
 
-.button1:hover {
-    background-color: var(--button-hover);
+.flagged {
+    border-left: 4px solid var(--badge-out);
+    background-color: #FBE9E7;
+}
+
+.flagged p + p {
+    margin-top: 8px;
+}
+
+.reveal-btn {
+    margin-top: 10px;
+    padding: 6px 12px;
+    background: transparent;
+    border: 1px solid var(--badge-out);
+    color: var(--badge-out);
+    border-radius: 4px;
+    font: inherit;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.reveal-btn:hover {
+    background-color: rgba(166, 59, 46, 0.08);
 }
