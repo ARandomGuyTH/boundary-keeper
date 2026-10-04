@@ -68,7 +68,7 @@ const PROMPT_TYPE_DISPLAY = {
     },
 };
 
-const USE_MOCK = true;            // set to false when the backend is connected
+const USE_MOCK = false;            // set to false when the backend is connected
 const MOCK_VERDICT = "PERSONAL";  // try "GENERAL", "GREY AREA", or "PERSONAL" to see different behaviours
 const MOCK_PROMPT_TYPE = "HYPOTHETICAL"; // try any of the keys in PROMPT_TYPE_DISPLAY
 
@@ -113,11 +113,13 @@ async function analysePrompt(text) {
     setNote("prompt-type-note", "");
     try {
         const data = await fetchJSON(BOUNDS_URL + encodeURIComponent(text) + "&type=0");
+        const confidence = ((data.confidence) * 100).toFixed(2) + "%";
         const label = String(data.result).toUpperCase().replace(/[_-]+/g, " ").trim();
         const display = PROMPT_TYPE_DISPLAY[label];
 
         setBadge("prompt-type", display ? display.text : data.result, display ? display.variant : undefined);
         setNote("prompt-type-note", display ? display.note : "");
+        document.getElementById("confidence-prompt").innerText = "Confidence level: " + confidence;
     } catch (err) {
         console.error(err);
         setBadge("prompt-type", "Unavailable");
@@ -130,6 +132,7 @@ async function analyseResponse(text) {
     setNote("bounds-verdict-note", "");
     try {
         const data = await fetchJSON(BOUNDS_URL + encodeURIComponent(text) + "&type=1");
+        const confidence = ((data.confidence) * 100).toFixed(2) + "%";
         const label = String(data.result).toUpperCase().replace(/[_-]+/g, " ").trim();
         const display = BOUNDS_DISPLAY[label];
 
@@ -141,6 +144,7 @@ async function analyseResponse(text) {
 
         setBadge("bounds-verdict", display.text, display.variant);
         setNote("bounds-verdict-note", display.note);
+        document.getElementById("confidence-response").innerText = "Confidence level: "+confidence;
         return label;
     } catch (err) {
         console.error(err);
@@ -152,34 +156,40 @@ async function analyseResponse(text) {
 
 
 function renderReply(bubble, text, verdict) {
-    if (verdict !== OUT_OF_BOUNDS_LABEL && verdict !== null) {
-        bubble.textContent = text;
-        chatBox.scrollTop = chatBox.scrollHeight;
-        return;
-    }
-
-    bubble.classList.add("flagged");
+    bubble.classList.remove("flagged");
     bubble.textContent = "";
+    bubble.textContent = text;
 
-    const note = document.createElement("p");
-    note.textContent = verdict === null
-        ? "This response couldn't be checked, so it has been withheld."
-        : "This response was withheld because it may contain or request personal information.";
+    // add a small caveat if the check failed
+    if (verdict === null) {
+        const note = document.createElement("p");
+        note.className = "unverified-note";
+        note.textContent = "This response couldn't be checked. Treat it with caution.";
+        bubble.append(note);
+    } else if (verdict === OUT_OF_BOUNDS_LABEL) {
+        // your existing withheld logic
+        bubble.textContent = "";
+        bubble.classList.add("flagged");
 
-    const hidden = document.createElement("p");
-    hidden.textContent = text;
-    hidden.hidden = true;
+        const note = document.createElement("p");
+        note.textContent = "This response was withheld because it may contain or request personal information.";
 
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "reveal-btn";
-    btn.textContent = "Show anyway";
-    btn.addEventListener("click", () => {
-        hidden.hidden = !hidden.hidden;
-        btn.textContent = hidden.hidden ? "Show anyway" : "Hide response";
-    });
+        const hidden = document.createElement("p");
+        hidden.textContent = text;
+        hidden.hidden = true;
 
-    bubble.append(note, btn, hidden);
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "reveal-btn";
+        btn.textContent = "Show anyway";
+        btn.addEventListener("click", () => {
+            hidden.hidden = !hidden.hidden;
+            btn.textContent = hidden.hidden ? "Show anyway" : "Hide response";
+        });
+
+        bubble.append(note, btn, hidden);
+    }
+    chatBox.scrollTop = chatBox.scrollHeight;
 }
 
 promptForm.addEventListener("submit", async function (event) {

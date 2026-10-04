@@ -35,7 +35,8 @@ def webAskLLM():
 def webClassify():
     text = flask.request.args.get("text").strip()
     type1 = int(flask.request.args.get("type").strip())
-    return flask.jsonify({"result": classify(text, type1)})
+    result, confidence = classify(text, type1)
+    return flask.jsonify({"result": result, "confidence" : confidence})
 
 def askOllama(question, model=OLLAMA_MODEL):
     response = ollama.chat(
@@ -50,7 +51,9 @@ def askOllama(question, model=OLLAMA_MODEL):
 def classify(text, type1):
     labels, model = (INPUT_LABELS, inputClassifier) if type1 == 0 else (RESPONSE_LABELS, classifier)
     probs = model.predict(tf.constant([text]), verbose=0)[0]
-    return labels[int(np.argmax(probs))]
+    idx = int(np.argmax(probs))
+    confidence = float(probs[idx])   # actual probability, e.g. 0.92
+    return labels[idx], confidence
 
 def main():
     print("Ask the AI for financial advice, and we'll classify the response.")

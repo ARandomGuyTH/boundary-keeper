@@ -211,6 +211,13 @@ margin-top: 20px;
     color: white;
 }
 
+.badge-confidence {
+    display: block;
+    font-size: 0.75em;
+    opacity: 0.85;
+    margin-top: 2px;
+}
+
 .badge-neutral { background-color: var(--muted); }
 .badge-in      { background-color: var(--badge-in); }
 .badge-border  { background-color: var(--badge-border); }
