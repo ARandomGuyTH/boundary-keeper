@@ -19,14 +19,14 @@
 
                 <div id="chat-container">
 
-                    <div class="chat-box" id="chat-box">
+                    <div class="chat-box" id="chat-box" aria-live="polite">
                         <div class="received-message chat-message">Hello! How can I assist you today?</div>
                     </div>
 
                 </div>
                 <div id="prompt-div">
                     <form id="prompt-form">
-                        <input type="text" id="prompt-input" placeholder="Enter prompt...">
+                        <input type="text" id="prompt-input" placeholder="Enter prompt..." autofocus="autofocus">
                         <input type="submit" value="Submit" id="submit-prompt">
                     </form>
                 </div>
@@ -39,20 +39,16 @@
 
                 <div id="stats-container">
 
-                    <button type ="button" id="classification">Classify</button>
-                    
-                    <div class="stats-box" id="stats-box">
-                        <p>Analysis results will appear here.</p>
-                    </div>
-
                     <section class="stat-card">
                         <h3 class="stat-label">Prompt type</h3>
                         <span class="badge badge-neutral" id="prompt-type">-</span>
+                        <p class="stat-note" id="prompt-type-note" aria-live="polite"></p>
                     </section>
 
                     <section class="stat-card">
                         <h3 class="stat-label">Response bounds</h3>
                         <span class="badge badge-neutral" id="bounds-verdict">-</span>
+                        <p class="stat-note" id="bounds-verdict-note" aria-live="polite"></p>
                     </section>
 
                 </div>

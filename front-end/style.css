@@ -11,7 +11,7 @@
     --surface: #FBF9F5;
     --border: #E3E0DA;
     --text: #37352F;
-    --muted: #787774;
+    --muted: #6B6966;
     --brown: #64473A;
 
     --bubble-border: #D9D5CE;
@@ -33,6 +33,11 @@ body {
     font-size: var(--font-size);
     color: var(--text);
     background: var(--bg);
+}
+
+@media (max-width: 800px) {
+    #main-screen { flex-direction: column; height: auto; min-height: 100vh; }
+    #main-chat-div, #main-stats-div { width: 100%; height: auto; min-height: 50vh; }
 }
 
 .panel-header {
@@ -75,8 +80,8 @@ body {
 }
 
 .chat-box {
-    width: 50vw;
-    height: 90vh;
+    width: 100%;
+    flex: 1;
     background-color: var(--surface);
     overflow-y: scroll;
     display: flex;
@@ -211,18 +216,43 @@ margin-top: 20px;
 .badge-border  { background-color: var(--badge-border); }
 .badge-out     { background-color: var(--badge-out); }
 
-.classification {
-    background-color: var(--button);
-    color: white;
-    padding: 10px 16px;
-    border-radius: 4px;
-    font: inherit;
-    cursor: pointer;
-    margin-left: 25vw;
-    margin-top: 5vw;
-    text-align: center;
+input:focus-visible, button:focus-visible {
+    outline: 2px solid var(--muted);
+    outline-offset: 2px;
 }
 
-.button1:hover {
-    background-color: var(--button-hover);
+.flagged {
+    border-left: 4px solid var(--badge-out);
+    background-color: #FBE9E7;
+}
+
+.flagged p + p {
+    margin-top: 8px;
+}
+
+.reveal-btn {
+    margin-top: 10px;
+    padding: 6px 12px;
+    background: transparent;
+    border: 1px solid var(--badge-out);
+    color: var(--badge-out);
+    border-radius: 4px;
+    font: inherit;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.reveal-btn:hover {
+    background-color: rgba(166, 59, 46, 0.08);
+}
+
+.stat-note {
+    margin-top: 10px;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    color: var(--muted);
+}
+
+.stat-note:empty {
+    display: none;
 }
