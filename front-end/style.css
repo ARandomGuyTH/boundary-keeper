@@ -11,7 +11,7 @@
     --surface: #FBF9F5;
     --border: #E3E0DA;
     --text: #37352F;
-    --muted: #787774;
+    --muted: #6B6966;
     --brown: #64473A;
 
     --bubble-border: #D9D5CE;
@@ -33,6 +33,11 @@ body {
     font-size: var(--font-size);
     color: var(--text);
     background: var(--bg);
+}
+
+@media (max-width: 800px) {
+    #main-screen { flex-direction: column; height: auto; min-height: 100vh; }
+    #main-chat-div, #main-stats-div { width: 100%; height: auto; min-height: 50vh; }
 }
 
 .panel-header {
@@ -75,8 +80,8 @@ body {
 }
 
 .chat-box {
-    width: 50vw;
-    height: 90vh;
+    width: 100%;
+    flex: 1;
     background-color: var(--surface);
     overflow-y: scroll;
     display: flex;
@@ -156,6 +161,10 @@ margin-top: 20px;
     input[type=submit]:hover {
         background-color: var(--button-hover);
     }
+    input:focus-visible, button:focus-visible {
+        outline: 2px solid var(--muted);
+        outline-offset: 2px;
+    }
 }
 
 #main-stats-div {
@@ -211,6 +220,7 @@ margin-top: 20px;
 .badge-border  { background-color: var(--badge-border); }
 .badge-out     { background-color: var(--badge-out); }
 
+/* TAKE THIS OUT (IN HTML AS WELL) */
 .classification {
     background-color: var(--button);
     color: white;
